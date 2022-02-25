@@ -96,27 +96,27 @@ struct ContentView: View {
         }
         
         // React to changes of state for the app (foreground, background, and inactive)
-               .onChange(of: scenePhase) { newPhase in
-
-                   if newPhase == .inactive {
-
-                       print("Inactive")
-
-                   } else if newPhase == .active {
-
-                       print("Active")
-
-                   } else if newPhase == .background {
-
-                       print("Background")
-
-                       // Permanently save the list of tasks
-                       persistFavourites()
-
-                   }
-
-               }
-
+        .onChange(of: scenePhase) { newPhase in
+            
+            if newPhase == .inactive {
+                
+                print("Inactive")
+                
+            } else if newPhase == .active {
+                
+                print("Active")
+                
+            } else if newPhase == .background {
+                
+                print("Background")
+                
+                // Permanently save the list of tasks
+                persistFavourites()
+                
+            }
+            
+        }
+        
         
         // When the app opens, get a new joke from the web service
         .task {
