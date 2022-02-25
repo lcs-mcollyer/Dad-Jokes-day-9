@@ -133,6 +133,11 @@ struct ContentView: View {
             await loadNewJoke()
             
             print("I tried to load a new joke")
+            
+            // Loading favourites from the loval device storage
+            loadFavourites()
+            
+            
         }
         .navigationTitle("icanhazdadjoke?")
         .padding()
