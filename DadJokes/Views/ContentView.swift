@@ -9,10 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     
+    
+    // Detect when app moves between the foreground, background, and inactive states
+    // NOTE: A complete list of keypaths that can be used with @Environment can be found here:
+    // https://developer.apple.com/documentation/swiftui/environmentvalues
+    @Environment(\.scenePhase) var scenePhase
+    
+    
     // MARK: Stored properties
     @State var currentJoke: DadJoke = DadJoke(id: "",
-                                       joke: "Knock, knock...",
-                                       status: 0)
+                                              joke: "Knock, knock...",
+                                              status: 0)
     
     // This will keep track of our list of favourite jokes
     @State var favourites: [DadJoke] = []   // empty list to start
@@ -37,7 +44,7 @@ struct ContentView: View {
             
             Image(systemName: "heart.circle")
                 .font(.largeTitle)
-                //                      CONDITION                        true   false
+            //                      CONDITION                        true   false
                 .foregroundColor(currentJokeAddedToFavourites == true ? .red : .secondary)
                 .onTapGesture {
                     
@@ -49,7 +56,7 @@ struct ContentView: View {
                         
                         // Record that we have marked this as a favourite
                         currentJokeAddedToFavourites = true
-
+                        
                     }
                     
                 }
@@ -85,8 +92,32 @@ struct ContentView: View {
             }
             
             Spacer()
-                        
+            
         }
+        
+        // React to changes of state for the app (foreground, background, and inactive)
+               .onChange(of: scenePhase) { newPhase in
+
+                   if newPhase == .inactive {
+
+                       print("Inactive")
+
+                   } else if newPhase == .active {
+
+                       print("Active")
+
+                   } else if newPhase == .background {
+
+                       print("Background")
+
+                       // Permanently save the list of tasks
+                       persistFavourites()
+
+                   }
+
+               }
+
+        
         // When the app opens, get a new joke from the web service
         .task {
             
@@ -153,7 +184,7 @@ struct ContentView: View {
             // populates
             print(error)
         }
-
+        
     }
     
     
@@ -166,28 +197,28 @@ struct ContentView: View {
         do {
             // Create an encoder
             let encoder = JSONEncoder()
-
+            
             // Ensure the JSON written to the file is human-readable
             encoder.outputFormatting = .prettyPrinted
-
+            
             // Encode the list of favourites we've collected
             let data = try encoder.encode(favourites)
-
+            
             // Actually write the JSON file to the documents directory
             try data.write(to: filename, options: [.atomicWrite, .completeFileProtection])
-
+            
             // See the data that was written
             print("Saved data to documents directory successfully.")
             print("===")
             print(String(data: data, encoding: .utf8)!)
-
+            
         } catch {
-
+            
             print(error.localizedDescription)
             print("Unable to write list of favourites to documents directory in app bundle on device.")
-
+            
         }
-
+        
     }
 }
 
